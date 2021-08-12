@@ -2,38 +2,46 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BankTransactionAnalyzerSimple {
     public static final String RESOURCES = "src/main/resources/";
 
     public static void main(String[] args) {
-        final Path path = Paths.get(RESOURCES + args[0]);
+        final BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
+        final String fileName = args[0];
+
+        final Path path = Paths.get(RESOURCES + fileName);
         if (Files.exists(path)) {
             try {
                 List<String> lines = Files.readAllLines(path);
-                double total = 0d;
-                final DateTimeFormatter DATE_PATTERN =
-                        DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                for (final String line :
-                        lines) {
-                    final String[] columns =
-                            line.split(",");
-                    final LocalDate data = LocalDate.parse(columns[0], DATE_PATTERN);
-                    if (data.getMonth() == Month.JANUARY) {
-                        final double amount = Double.parseDouble(columns[1]);
-                        total += amount;
-                    }
-                }
-                System.out.println("✅ The total for all transactions in January is " + total);
+                final List<BankTransaction> bankTransactions =
+                        bankStatementCSVParser.parseLinesFromCSV(lines);
+                System.out.println("✅ The total for all transactions is " + calculateTotalAmount(bankTransactions));
+                System.out.println("✅ Transactions in January " + selectInMonth(bankTransactions, Month.JANUARY));
             } catch (IOException e) {
                 e.printStackTrace();
             }
         } else {
             System.out.println("🛑 Sorry file does not exist");
         }
+    }
+
+    private static List<BankTransaction> selectInMonth(List<BankTransaction> bankTransactions, Month month) {
+        return bankTransactions.stream().filter(
+                bankTransaction -> bankTransaction.getDate().getMonth() == month
+        ).collect(Collectors.toList());
+    }
+
+    public static double calculateTotalAmount(final List<BankTransaction> bankTransactions) {
+        double total = 0d;
+        for (final var bankTransaction :
+                bankTransactions) {
+            total += bankTransaction.getAmount();
+
+        }
+        return total;
     }
 }
