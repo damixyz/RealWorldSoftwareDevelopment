@@ -9,13 +9,26 @@ public class BankStatementProcessor {
         this.bankTransactions = bankTransactions;
     }
 
+    public double summarizeTransactions(final BankTransactionSummarizer bankTransactionSummarizer) {
+        double result = 0;
+        for (final BankTransaction bankTransaction :
+                bankTransactions) {
+            result = bankTransactionSummarizer.summarize(result, bankTransaction);
+        }
+        return result;
+    }
+
     public double calculateTotalAmount() {
         return bankTransactions.stream().mapToDouble(BankTransaction::getAmount).sum();
     }
 
     public double calculateTotalInMonth(final Month month) {
-        return bankTransactions.stream().filter(bankTransaction -> bankTransaction.getDate().getMonth().equals(month))
-                .mapToDouble(BankTransaction::getAmount).sum();
+        return summarizeTransactions((acc, bankTransaction) ->
+                bankTransaction.getDate().getMonth() == month ?
+                        acc + bankTransaction.getAmount() : acc
+        );
+//        return bankTransactions.stream().filter(bankTransaction -> bankTransaction.getDate().getMonth().equals(month))
+//                .mapToDouble(BankTransaction::getAmount).sum();
     }
 
     public double calculateTotalForCategory(final String category) {
@@ -23,21 +36,14 @@ public class BankStatementProcessor {
                 .mapToDouble(BankTransaction::getAmount).sum();
     }
 
-    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
-        return bankTransactions.stream().filter(
-                bankTransaction -> bankTransaction.getAmount() >= amount
-        ).collect(Collectors.toList());
-    }
-
-    public List<BankTransaction> findTransactionInMonth(final Month month) {
-        return bankTransactions.stream().filter(
-                bankTransaction -> bankTransaction.getDate().getMonth().equals(month)
-        ).collect(Collectors.toList());
-    }
-
     public List<BankTransaction> findTransactions(final BankTransactionFilter bankTransactionFilter) {
         return bankTransactions.stream().filter(
                 bankTransactionFilter::test
         ).collect(Collectors.toList());
     }
+
+    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
+        return findTransactions(bankTransaction -> bankTransaction.getAmount() >= amount);
+    }
+
 }
