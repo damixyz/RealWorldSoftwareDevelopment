@@ -8,7 +8,7 @@ import java.util.List;
 public class BankStatementAnalyzer {
     public static final String RESOURCES = "src/main/resources/";
 
-    private static final BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
+    private static final BankStatementParser BANK_STATEMENT_PARSER = new BankStatementCSVParser();
 
     public static void main(String[] args) {
         final String fileName = args[0];
@@ -17,7 +17,7 @@ public class BankStatementAnalyzer {
         if (Files.exists(path)) {
             try {
                 List<String> lines = Files.readAllLines(path);
-                List<BankTransaction> bankTransactions = bankStatementCSVParser.parseLinesFromCSV(lines);
+                List<BankTransaction> bankTransactions = BANK_STATEMENT_PARSER.parseLinesFrom(lines);
                 final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
                 collectSummary(bankStatementProcessor);
@@ -37,11 +37,10 @@ public class BankStatementAnalyzer {
         System.out.println("✅ The total for transactions in February is "
                 + bankStatementProcessor.calculateTotalInMonth(Month.FEBRUARY));
 
-            System.out
+        System.out
                 .println("The total salary received is " + bankStatementProcessor.calculateTotalForCategory("Salary"));
 
     }
-
 
 
 }
