@@ -36,12 +36,6 @@ public class BankTransactionAnalyzerSimple {
     }
 
     public static double calculateTotalAmount(final List<BankTransaction> bankTransactions) {
-        double total = 0d;
-        for (final var bankTransaction :
-                bankTransactions) {
-            total += bankTransaction.getAmount();
-
-        }
-        return total;
+        return bankTransactions.stream().mapToDouble(BankTransaction::getAmount).sum();
     }
 }
