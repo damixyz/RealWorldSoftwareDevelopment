@@ -4,12 +4,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Month;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BankStatementAnalyzer {
     public static final String RESOURCES = "src/main/resources/";
 
-    private static BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
+    private static final BankStatementCSVParser bankStatementCSVParser = new BankStatementCSVParser();
 
     public static void main(String[] args) {
         final String fileName = args[0];
@@ -33,9 +32,9 @@ public class BankStatementAnalyzer {
     private static void collectSummary(BankStatementProcessor bankStatementProcessor) {
 
         System.out.println("✅ The total for all transactions is " + bankStatementProcessor.calculateTotalAmount());
-        System.out.println("✅ The total for transactions in Janury is "
+        System.out.println("✅ The total for transactions in January is "
                 + bankStatementProcessor.calculateTotalInMonth(Month.JANUARY));
-        System.out.println("✅ The total for transactions in Feburury is "
+        System.out.println("✅ The total for transactions in February is "
                 + bankStatementProcessor.calculateTotalInMonth(Month.FEBRUARY));
 
             System.out
@@ -43,6 +42,6 @@ public class BankStatementAnalyzer {
 
     }
 
-    
+
 
 }
