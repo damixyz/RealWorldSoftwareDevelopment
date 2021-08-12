@@ -1,5 +1,6 @@
 import java.time.Month;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BankStatementProcessor {
     private final List<BankTransaction> bankTransactions;
@@ -20,5 +21,11 @@ public class BankStatementProcessor {
     public double calculateTotalForCategory(final String category) {
         return bankTransactions.stream().filter(bankTransaction -> bankTransaction.description.equals(category))
                 .mapToDouble(BankTransaction::getAmount).sum();
+    }
+
+    public List<BankTransaction> findTransactionsGreaterThanEqual(final int amount) {
+        return bankTransactions.stream().filter(
+                bankTransaction -> bankTransaction.getAmount() >= amount
+        ).collect(Collectors.toList());
     }
 }
