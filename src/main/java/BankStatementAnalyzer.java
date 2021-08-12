@@ -8,16 +8,13 @@ import java.util.List;
 public class BankStatementAnalyzer {
     public static final String RESOURCES = "src/main/resources/";
 
-    private static final BankStatementParser BANK_STATEMENT_PARSER = new BankStatementCSVParser();
-
-    public static void main(String[] args) {
-        final String fileName = args[0];
+    public void analyzer(final String fileName, final BankStatementParser bankStatementParser) {
 
         final Path path = Paths.get(RESOURCES + fileName);
         if (Files.exists(path)) {
             try {
                 List<String> lines = Files.readAllLines(path);
-                List<BankTransaction> bankTransactions = BANK_STATEMENT_PARSER.parseLinesFrom(lines);
+                List<BankTransaction> bankTransactions = bankStatementParser.parseLinesFrom(lines);
                 final BankStatementProcessor bankStatementProcessor = new BankStatementProcessor(bankTransactions);
 
                 collectSummary(bankStatementProcessor);
