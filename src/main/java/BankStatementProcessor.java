@@ -27,8 +27,6 @@ public class BankStatementProcessor {
                 bankTransaction.getDate().getMonth() == month ?
                         acc + bankTransaction.getAmount() : acc
         );
-//        return bankTransactions.stream().filter(bankTransaction -> bankTransaction.getDate().getMonth().equals(month))
-//                .mapToDouble(BankTransaction::getAmount).sum();
     }
 
     public double calculateTotalForCategory(final String category) {
