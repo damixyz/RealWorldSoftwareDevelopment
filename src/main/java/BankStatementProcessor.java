@@ -28,4 +28,10 @@ public class BankStatementProcessor {
                 bankTransaction -> bankTransaction.getAmount() >= amount
         ).collect(Collectors.toList());
     }
+
+    public List<BankTransaction> findTransactionInMonth(final Month month) {
+        return bankTransactions.stream().filter(
+                bankTransaction -> bankTransaction.getDate().getMonth().equals(month)
+        ).collect(Collectors.toList());
+    }
 }
