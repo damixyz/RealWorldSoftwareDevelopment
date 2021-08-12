@@ -34,4 +34,10 @@ public class BankStatementProcessor {
                 bankTransaction -> bankTransaction.getDate().getMonth().equals(month)
         ).collect(Collectors.toList());
     }
+
+    public List<BankTransaction> findTransactions(final BankTransactionFilter bankTransactionFilter) {
+        return bankTransactions.stream().filter(
+                bankTransactionFilter::test
+        ).collect(Collectors.toList());
+    }
 }
